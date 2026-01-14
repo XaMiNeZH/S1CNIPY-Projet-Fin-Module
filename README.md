@@ -413,8 +413,7 @@ Pour toute question ou problème, veuillez créer une issue dans le dépôt du p
 ---
 
 **Version** : 1.0.0  
-**Dernière mise à jour** : 2024
-
+**Dernière mise à jour** : 2026
 ---
 
 *Bon entraînement ! 💪🏃‍♂️*
