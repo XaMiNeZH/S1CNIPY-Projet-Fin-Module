@@ -60,8 +60,16 @@ venv.bak/
 # PDF reports (générés)
 *.pdf
 
-# Logs
+# LaTeX auxiliary files
+*.aux
+*.fdb_latexmk
+*.fls
+*.out
+*.synctex.gz
+*.toc
 *.log
+
+# Logs
 logs/
 
 # OS

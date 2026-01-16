@@ -1,0 +1,643 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{ifthen}
+\usepackage{hyperref}
+
+% Configuration pour le code Python
+\lstdefinestyle{pythonstyle}{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{gray}\itshape,
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=8pt,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    breaklines=true,
+    breakatwhitespace=false,
+    tabsize=4,
+    showstringspaces=false,
+    literate={é}{{\'e}}1 {è}{{\`e}}1 {à}{{\`a}}1 {ù}{{\`u}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {ç}{{\c{c}}}1
+}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\setstretch{1.25}
+
+% hyperref should be loaded after most packages to avoid warnings
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    pdftitle={Rapport Projet Fin Module - Sports Performance Pro},
+    pdfauthor={EZ-ZAHERY Ahmed Amine, BELAZRI Hamza},
+    pdfsubject={Rapport de projet S1CNIPY},
+    bookmarks=true,
+    bookmarksopen=true
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Sports Performance Pro}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyfoot[L]{\small S1CNIPY}
+\fancyfoot[R]{\small \thepage}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Ensure enough space for header (resolves fancyhdr warning)
+\setlength{\headheight}{14.5pt}
+
+\fancypagestyle{plain}{%
+    \fancyhf{}%
+    \fancyhead[L]{\small Sports Performance Pro}%
+    \renewcommand{\headrulewidth}{0.4pt}%
+    \fancyfoot[L]{\small S1CNIPY}%
+    \fancyfoot[R]{\small \thepage}%
+    \renewcommand{\footrulewidth}{0.4pt}%
+}
+
+\begin{document}
+
+% Page de titre
+\begin{titlepage}
+    \begin{center}
+        \IfFileExists{ensetm logo.png}{%
+            \includegraphics[width=0.5\textwidth]{ensetm logo.png} \\[0.2cm]
+        }{%
+            \vspace{1cm}
+        }
+        \textbf{\LARGE École Normale Supérieure de l'Enseignement Technique de Mohammedia}\\[0.2cm]
+        \textbf{\LARGE Université Hassan II de Casablanca}\\[0.3cm]
+        \textit{\Large Département Mathématiques et Informatique}\\[0.3cm]
+        \rule{12cm}{0.3mm}\\[0.5cm]
+        {\Huge \textbf{Projet Fin de Module}}\\[0.5cm]
+        {\Large \textbf{Sports Performance Pro}}\\[0.3cm]
+        {\large \textbf{Plateforme de Suivi et d'Analyse des Performances Sportives}}\\[0.5cm]
+        \rule{12cm}{0.3mm}\\[1.5cm]
+        \vfill
+        \today
+        \vfill
+        \textbf{Réalisé par :}\\[0.2cm]
+        \textbf{EZ-ZAHERY Ahmed Amine}\\[0.2cm]
+        \textbf{BELAZRI Hamza}\\[0.2cm]
+        \textbf{Encadrant :} Pr. Jamal \textbf{MAWANE}\\[0.2cm]
+        Année universitaire : 2025--2026
+        \vfill
+    \end{center}
+\end{titlepage}
+
+% Sommaire
+\pagenumbering{roman}
+\renewcommand{\contentsname}{Table des matières}
+\setcounter{tocdepth}{2} % Afficher les chapitres et sections dans la TOC
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% Introduction
+\chapter*{Introduction}
+\phantomsection
+\addcontentsline{toc}{chapter}{Introduction}
+
+Dans le cadre du module S1CNIPY (Compétences Numérique et Informatique Python), ce projet consiste à développer une application web complète pour le suivi, l'analyse et l'optimisation des performances sportives. \textbf{Sports Performance Pro} est une plateforme moderne développée avec Streamlit qui permet aux athlètes et sportifs de tous niveaux d'enregistrer leurs entraînements, d'analyser leurs données avec des métriques avancées, de visualiser leurs progrès de manière interactive et de générer des rapports détaillés.
+
+Ce projet met en pratique plusieurs concepts fondamentaux des compétences numériques et de la programmation Python :
+\begin{itemize}
+    \item \textbf{Calcul formel} : Implémentation de formules scientifiques pour le calcul de métriques sportives (TRIMP, VO2max, zones cardiaques, etc.)
+    \item \textbf{Manipulation de données} : Utilisation de Pandas pour le traitement et l'analyse de données de performances
+    \item \textbf{Visualisation} : Création de graphiques interactifs avec Plotly pour représenter l'évolution des performances
+    \item \textbf{Interface utilisateur} : Développement d'une interface web moderne et intuitive avec Streamlit
+    \item \textbf{Génération de rapports} : Export de données en PDF et CSV pour une analyse approfondie
+\end{itemize}
+
+Ce rapport documente l'ensemble des étapes de développement, de la conception à l'implémentation, en passant par les choix techniques et les formules scientifiques utilisées.
+
+\chapter{Présentation du Projet}
+
+\section{Contexte et Objectifs}
+
+Le suivi des performances sportives est devenu essentiel pour les athlètes souhaitant optimiser leur entraînement. Les applications modernes permettent de collecter de nombreuses données (distance, durée, fréquence cardiaque, calories, etc.), mais l'analyse approfondie de ces données nécessite souvent des outils spécialisés.
+
+L'objectif de ce projet est de créer une plateforme complète qui :
+\begin{enumerate}
+    \item Permet l'enregistrement facile des performances sportives
+    \item Fournit des analyses avancées basées sur des formules scientifiques reconnues
+    \item Visualise les données de manière intuitive et interactive
+    \item Génère des rapports professionnels pour le suivi à long terme
+    \item Offre des calculateurs spécialisés pour la planification d'entraînements
+\end{enumerate}
+
+\section{Description Générale}
+
+\textbf{Sports Performance Pro} est une application web développée en Python utilisant le framework Streamlit. Elle offre six modules principaux :
+
+\begin{description}
+    \item[\textbf{Tableau de bord}] Vue d'ensemble des performances avec métriques clés et visualisations interactives
+    \item[\textbf{Enregistrement}] Formulaire complet pour saisir les données d'entraînement
+    \item[\textbf{Analyse avancée}] Statistiques détaillées, progression, zones cardiaques et corrélations
+    \item[\textbf{Objectifs \& Records}] Suivi des objectifs et records personnels
+    \item[\textbf{Calculateurs}] Outils de calcul pour l'allure, les calories, le TRIMP, etc.
+    \item[\textbf{Import/Export}] Export PDF et CSV, import de données existantes
+\end{description}
+
+\section{Technologies Utilisées}
+
+\subsection{Frameworks et Bibliothèques}
+
+\begin{itemize}
+    \item \textbf{Streamlit} (v1.28+) : Framework web pour créer l'interface utilisateur rapidement
+    \item \textbf{Pandas} (v2.0+) : Manipulation et analyse de données tabulaires
+    \item \textbf{NumPy} (v1.24+) : Calculs numériques et opérations mathématiques
+    \item \textbf{Plotly} (v5.17+) : Visualisations interactives (express et graph\_objects)
+    \item \textbf{ReportLab} (v4.0+) : Génération de rapports PDF professionnels
+\end{itemize}
+
+\subsection{Architecture}
+
+L'application suit une architecture modulaire où chaque section correspond à une fonctionnalité distincte. Les données sont stockées dans la session Streamlit (\texttt{st.session\_state}) pendant l'exécution, permettant une persistance temporaire sans base de données.
+
+\chapter{Architecture et Implémentation}
+
+\section{Structure du Code}
+
+Le fichier principal \texttt{mainapp.py} est organisé en plusieurs sections logiques :
+
+\subsection{Configuration et Initialisation}
+
+La première partie du code configure l'application Streamlit et définit les styles CSS personnalisés pour une interface moderne avec support du mode clair/sombre.
+
+\begin{lstlisting}[style=pythonstyle, caption={Configuration de la page Streamlit}]
+st.set_page_config(
+    page_title="Sports Performance Pro",
+    page_icon=":runner:",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+\end{lstlisting}
+
+\subsection{Initialisation des Données}
+
+Les données sont initialisées dans \texttt{st.session\_state} pour persister pendant la session :
+
+\begin{itemize}
+    \item \texttt{performances} : DataFrame Pandas contenant toutes les performances enregistrées
+    \item \texttt{objectifs} : Dictionnaire avec les objectifs hebdomadaires et mensuels
+    \item \texttt{profil} : Informations personnelles de l'utilisateur (âge, poids, taille, FC, etc.)
+\end{itemize}
+
+\subsection{Fonctions de Calcul}
+
+Le cœur de l'application réside dans les fonctions de calcul scientifique implémentées :
+
+\subsubsection{Calcul des Métriques Avancées}
+
+La fonction \texttt{calculer\_metriques\_avancees()} calcule les statistiques globales à partir d'un DataFrame de performances :
+
+\begin{lstlisting}[style=pythonstyle, caption={Fonction de calcul des métriques}]
+def calculer_metriques_avancees(df):
+    if df.empty:
+        return {}
+    
+    metriques = {
+        'total_entrainements': len(df),
+        'duree_totale': df['duree_min'].sum(),
+        'distance_totale': df['distance_km'].sum(),
+        'calories_totales': df['calories'].sum(),
+        'vitesse_moyenne': df['vitesse_moy'].mean(),
+        'fc_moyenne': df['frequence_cardiaque_moy'].mean(),
+        'elevation_totale': df['elevation_m'].sum()
+    }
+    # ... calculs de progression
+    return metriques
+\end{lstlisting}
+
+\subsubsection{Zones de Fréquence Cardiaque}
+
+Les zones cardiaques sont calculées selon la méthode de Karvonen, qui utilise la réserve cardiaque :
+
+\begin{lstlisting}[style=pythonstyle, caption={Calcul des zones cardiaques}]
+def calculer_zones_fc(fc_max, fc_repos=60):
+    zones = {
+        'Zone 1 (Récupération)': (fc_repos + 0.5 * (fc_max - fc_repos), 
+                                   fc_repos + 0.6 * (fc_max - fc_repos)),
+        'Zone 2 (Endurance)': (fc_repos + 0.6 * (fc_max - fc_repos), 
+                                fc_repos + 0.7 * (fc_max - fc_repos)),
+        # ... autres zones
+    }
+    return zones
+\end{lstlisting}
+
+\subsubsection{Calcul du TRIMP}
+
+Le TRIMP (Training Impulse) mesure la charge d'entraînement selon la formule de Banister :
+
+\begin{lstlisting}[style=pythonstyle, caption={Calcul du TRIMP}]
+def calculer_trimp(duree_min, fc_moy, fc_repos, fc_max, sexe='Homme'):
+    delta_fc = (fc_moy - fc_repos) / (fc_max - fc_repos)
+    delta_fc = max(0, min(1, delta_fc))
+    
+    if sexe == 'Homme':
+        y = 0.64 * np.exp(1.92 * delta_fc)
+    else:
+        y = 0.86 * np.exp(1.67 * delta_fc)
+    
+    trimp = duree_min * delta_fc * y
+    return round(trimp, 1)
+\end{lstlisting}
+
+\section{Interface Utilisateur}
+
+\subsection{Layout Principal}
+
+L'interface est organisée en deux colonnes :
+\begin{itemize}
+    \item \textbf{Colonne gauche} : Navigation et widget hebdomadaire
+    \item \textbf{Colonne droite} : Contenu principal selon la section sélectionnée
+\end{itemize}
+
+\subsection{Tableau de Bord}
+
+Le tableau de bord affiche :
+\begin{itemize}
+    \item Des métriques clés (entraînements, distance, durée, calories)
+    \item Des graphiques interactifs d'évolution temporelle
+    \item Des filtres par sport et période
+    \item Un tableau des dernières performances
+\end{itemize}
+
+\subsection{Visualisations}
+
+Les graphiques sont créés avec Plotly pour une interactivité maximale :
+\begin{itemize}
+    \item Graphiques de ligne pour l'évolution temporelle
+    \item Graphiques en barres pour les comparaisons
+    \item Graphiques en secteurs pour les répartitions
+    \item Graphiques de dispersion pour les corrélations
+\end{itemize}
+
+\chapter{Formules Scientifiques Implémentées}
+
+Ce chapitre détaille les formules mathématiques et scientifiques utilisées dans l'application.
+
+\section{Zones de Fréquence Cardiaque (Méthode de Karvonen)}
+
+La méthode de Karvonen calcule les zones cardiaques en utilisant la réserve cardiaque :
+
+\begin{equation}
+\text{Zone} = \text{FC}_{\text{repos}} + (\% \times (\text{FC}_{\text{max}} - \text{FC}_{\text{repos}}))
+\end{equation}
+
+où :
+\begin{itemize}
+    \item $\text{FC}_{\text{repos}}$ : Fréquence cardiaque au repos
+    \item $\text{FC}_{\text{max}}$ : Fréquence cardiaque maximale
+    \item $\%$ : Pourcentage de la réserve cardiaque
+\end{itemize}
+
+Les cinq zones sont définies comme suit :
+\begin{enumerate}
+    \item \textbf{Zone 1 (Récupération)} : 50-60\% de la réserve cardiaque
+    \item \textbf{Zone 2 (Endurance)} : 60-70\%
+    \item \textbf{Zone 3 (Tempo)} : 70-80\%
+    \item \textbf{Zone 4 (Seuil)} : 80-90\%
+    \item \textbf{Zone 5 (VO2 Max)} : 90-100\%
+\end{enumerate}
+
+\section{TRIMP (Training Impulse)}
+
+Le TRIMP mesure la charge d'entraînement selon la formule de Banister :
+
+\begin{equation}
+\text{TRIMP} = D \times \Delta\text{FC} \times y
+\end{equation}
+
+où :
+\begin{itemize}
+    \item $D$ : Durée de l'entraînement (en minutes)
+    \item $\Delta\text{FC} = \frac{\text{FC}_{\text{moy}} - \text{FC}_{\text{repos}}}{\text{FC}_{\text{max}} - \text{FC}_{\text{repos}}}$ : Intensité relative
+    \item $y$ : Facteur d'intensité dépendant du sexe
+\end{itemize}
+
+Le facteur $y$ est calculé différemment selon le sexe :
+\begin{align}
+y_{\text{Homme}} &= 0.64 \times e^{1.92 \times \Delta\text{FC}} \\
+y_{\text{Femme}} &= 0.86 \times e^{1.67 \times \Delta\text{FC}}
+\end{align}
+
+\section{Prédiction de Temps (Formule de Riegel)}
+
+La formule de Riegel permet de prédire le temps pour une distance cible à partir d'une performance de référence :
+
+\begin{equation}
+T_2 = T_1 \times \left(\frac{D_2}{D_1}\right)^{1.06}
+\end{equation}
+
+où :
+\begin{itemize}
+    \item $T_1$ : Temps de référence (en minutes)
+    \item $D_1$ : Distance de référence (en km)
+    \item $T_2$ : Temps prédit pour la distance cible
+    \item $D_2$ : Distance cible (en km)
+\end{itemize}
+
+\section{FC Max Théorique (Formule de Tanaka)}
+
+La formule de Tanaka estime la fréquence cardiaque maximale théorique :
+
+\begin{equation}
+\text{FC}_{\text{max}} = 208 - 0.7 \times \text{âge}
+\end{equation}
+
+Cette formule est plus précise que la formule classique (220 - âge) pour les personnes de tous âges.
+
+\section{VO2max Estimé (Formule d'Uth)}
+
+Le VO2max peut être estimé à partir de la fréquence cardiaque selon la formule d'Uth :
+
+\begin{equation}
+\text{VO2}_{\text{max}} = 15.3 \times \frac{\text{FC}_{\text{max}}}{\text{FC}_{\text{repos}}}
+\end{equation}
+
+où le résultat est exprimé en ml/kg/min.
+
+\section{IMC (Indice de Masse Corporelle)}
+
+L'IMC est calculé selon la formule standard :
+
+\begin{equation}
+\text{IMC} = \frac{\text{poids (kg)}}{(\text{taille (m)})^2}
+\end{equation}
+
+\section{Calcul des Calories (Métabolisme Équivalent)}
+
+Les calories brûlées sont estimées à partir du MET (Metabolic Equivalent of Task) :
+
+\begin{equation}
+\text{Calories} = \text{MET} \times \text{poids (kg)} \times \text{durée (heures)}
+\end{equation}
+
+Les valeurs MET varient selon l'activité :
+\begin{itemize}
+    \item Course à pied (10 km/h) : MET = 10.0
+    \item Course à pied (12 km/h) : MET = 12.5
+    \item Cyclisme (20 km/h) : MET = 8.0
+    \item Natation (loisir) : MET = 6.0
+    \item Marche rapide : MET = 5.0
+\end{itemize}
+
+\chapter{Fonctionnalités Détaillées}
+
+\section{Tableau de Bord}
+
+Le tableau de bord offre une vue d'ensemble complète des performances avec :
+
+\subsection{Métriques Clés}
+
+\begin{itemize}
+    \item Nombre total d'entraînements
+    \item Durée totale cumulée
+    \item Distance totale parcourue
+    \item Calories totales brûlées
+    \item Vitesse moyenne
+    \item Fréquence cardiaque moyenne
+    \item Élévation totale
+\end{itemize}
+
+\subsection{Filtres Avancés}
+
+Les utilisateurs peuvent filtrer les données par :
+\begin{itemize}
+    \item Type de sport
+    \item Période (date de début et de fin)
+\end{itemize}
+
+\subsection{Visualisations}
+
+Trois onglets de visualisation sont disponibles :
+\begin{enumerate}
+    \item \textbf{Distance \& Durée} : Évolution temporelle de la distance et durée des entraînements
+    \item \textbf{Fréquence Cardiaque} : Évolution de la FC moyenne et maximale
+    \item \textbf{Répartition} : Graphiques en secteurs pour la répartition par sport et type d'entraînement
+\end{enumerate}
+
+\section{Analyse Avancée}
+
+Cette section fournit des analyses approfondies :
+
+\subsection{Statistiques Générales}
+
+\begin{itemize}
+    \item Nombre d'entraînements et distance moyenne par séance
+    \item Durée moyenne et fréquence d'entraînement
+    \item Vitesse et calories moyennes
+\end{itemize}
+
+\subsection{Analyse de Progression}
+
+Calcul du pourcentage d'amélioration :
+\begin{equation}
+\text{Progression} = \frac{V_{\text{finale}} - V_{\text{initiale}}}{V_{\text{initiale}}} \times 100\%
+\end{equation}
+
+où $V$ peut être la distance, la vitesse, ou toute autre métrique.
+
+\subsection{Zones de Fréquence Cardiaque}
+
+Visualisation graphique des 5 zones cardiaques avec indication de la FC moyenne de l'utilisateur, permettant d'identifier dans quelle zone l'entraînement s'est principalement déroulé.
+
+\subsection{Corrélations}
+
+Analyse des corrélations entre différentes métriques :
+\begin{itemize}
+    \item Distance vs Calories : Relation entre l'effort et l'énergie dépensée
+    \item Vitesse vs Fréquence Cardiaque : Relation entre l'intensité et la réponse cardiaque
+\end{itemize}
+
+\section{Objectifs et Records}
+
+\subsection{Suivi des Objectifs}
+
+L'utilisateur peut définir des objectifs :
+\begin{itemize}
+    \item \textbf{Hebdomadaires} : Distance, nombre de séances, durée, calories
+    \item \textbf{Mensuels} : Distance totale
+\end{itemize}
+
+La progression est visualisée avec des barres de progression et un graphique radar comparant objectifs et réalisations.
+
+\subsection{Records Personnels}
+
+Pour chaque sport, l'application identifie :
+\begin{itemize}
+    \item Plus longue distance parcourue
+    \item Plus longue durée d'entraînement
+    \item Meilleure vitesse moyenne
+    \item Plus grand nombre de calories brûlées
+\end{itemize}
+
+\section{Calculateurs}
+
+\subsection{Calculateur d'Allure}
+
+Calcule l'allure (temps par kilomètre) à partir de la distance et du temps total :
+
+\begin{equation}
+\text{Allure} = \frac{\text{Temps total (min)}}{\text{Distance (km)}}
+\end{equation}
+
+\subsection{Prédiction de Temps}
+
+Utilise la formule de Riegel pour prédire les temps sur différentes distances à partir d'une performance de référence.
+
+\subsection{Calculateur de Calories}
+
+Estime les calories brûlées en utilisant les valeurs MET selon le type d'activité et les caractéristiques de l'utilisateur.
+
+\subsection{Calculateur TRIMP}
+
+Calcule la charge d'entraînement avec un indicateur visuel (jauge) montrant le niveau d'intensité :
+\begin{itemize}
+    \item \textcolor{green}{$\bullet$} Léger : TRIMP $<$ 50
+    \item \textcolor{yellow}{$\bullet$} Modéré : 50 $\leq$ TRIMP $<$ 100
+    \item \textcolor{orange}{$\bullet$} Élevé : 100 $\leq$ TRIMP $<$ 150
+    \item \textcolor{red}{$\bullet$} Très élevé : TRIMP $\geq$ 150
+\end{itemize}
+
+\section{Import/Export}
+
+\subsection{Export PDF}
+
+Génération d'un rapport PDF professionnel contenant :
+\begin{itemize}
+    \item Résumé des métriques clés
+    \item Tableau détaillé des entraînements
+    \item Personnalisable par période et sport
+\end{itemize}
+
+\subsection{Export CSV}
+
+Export des données au format CSV pour une analyse dans Excel ou d'autres outils.
+
+\subsection{Import CSV}
+
+Import de données existantes avec :
+\begin{itemize}
+    \item Validation du format
+    \item Aperçu avant import
+    \item Mode ajout ou remplacement
+    \item Modèle CSV téléchargeable
+\end{itemize}
+
+\chapter{Design et Interface Utilisateur}
+
+\section{Thème Visuel}
+
+L'application utilise un design moderne avec :
+\begin{itemize}
+    \item \textbf{Couleurs principales} : Dégradé violet (\texttt{\#667eea} $\rightarrow$ \texttt{\#764ba2})
+    \item \textbf{Police} : Inter (Google Fonts) pour une lisibilité optimale
+    \item \textbf{Style} : Glassmorphism avec effets de transparence
+    \item \textbf{Support} : Mode clair et sombre adaptatif
+\end{itemize}
+
+\section{Animations et Transitions}
+
+Des animations CSS sont implémentées pour améliorer l'expérience utilisateur :
+\begin{itemize}
+    \item Fade in/out pour l'apparition des éléments
+    \item Transitions fluides sur les interactions (hover)
+    \item Effets de profondeur avec les ombres
+\end{itemize}
+
+\section{Responsive Design}
+
+L'interface est conçue pour être adaptative :
+\begin{itemize}
+    \item Layout flexible avec colonnes
+    \item Graphiques interactifs qui s'adaptent à la taille de l'écran
+    \item Optimisation pour différents types d'appareils
+\end{itemize}
+
+\chapter{Résultats et Tests}
+
+\section{Données de Test}
+
+Pour tester l'application, des données d'exemple peuvent être saisies manuellement ou importées via CSV. L'application gère correctement :
+\begin{itemize}
+    \item Des séries de données sur plusieurs mois
+    \item Différents types de sports
+    \item Variations dans les métriques (distance, durée, FC, etc.)
+\end{itemize}
+
+\section{Validation des Calculs}
+
+Les formules scientifiques implémentées ont été validées en comparant les résultats avec :
+\begin{itemize}
+    \item Des calculateurs en ligne reconnus
+    \item Des formules de référence dans la littérature scientifique
+    \item Des cas de test avec valeurs connues
+\end{itemize}
+
+\section{Performance}
+
+L'application est performante même avec :
+\begin{itemize}
+    \item Des centaines d'entraînements enregistrés
+    \item Des graphiques complexes avec de nombreuses données
+    \item Des calculs en temps réel lors de la navigation
+\end{itemize}
+
+\chapter*{Conclusion}
+\phantomsection
+\addcontentsline{toc}{chapter}{Conclusion}
+
+Ce projet a permis de mettre en pratique de nombreux concepts des compétences numériques et de la programmation Python dans un contexte concret et utile. \textbf{Sports Performance Pro} est une application complète qui démontre :
+
+\begin{enumerate}
+    \item \textbf{Maîtrise de Python} : Utilisation avancée de bibliothèques comme Pandas, NumPy, Plotly et Streamlit
+    \item \textbf{Calcul scientifique} : Implémentation de formules complexes (TRIMP, VO2max, zones cardiaques, etc.)
+    \item \textbf{Manipulation de données} : Traitement efficace de données tabulaires avec Pandas
+    \item \textbf{Visualisation} : Création de graphiques interactifs et informatifs
+    \item \textbf{Interface utilisateur} : Développement d'une interface moderne et intuitive
+    \item \textbf{Génération de documents} : Export de rapports PDF professionnels
+\end{enumerate}
+
+L'application répond aux besoins des sportifs souhaitant suivre et analyser leurs performances de manière approfondie. Les formules scientifiques implémentées permettent une analyse précise et fiable des données d'entraînement.
+
+\section{Perspectives d'Amélioration}
+
+Plusieurs améliorations pourraient être apportées à l'application :
+
+\begin{itemize}
+    \item \textbf{Persistance des données} : Intégration d'une base de données (SQLite, PostgreSQL) pour sauvegarder les données de manière permanente
+    \item \textbf{Authentification} : Système de comptes utilisateurs pour permettre à plusieurs personnes d'utiliser l'application
+    \item \textbf{Synchronisation} : Connexion avec des appareils fitness (Garmin, Strava, Apple Health, etc.)
+    \item \textbf{Planification} : Module de planification d'entraînements avec suggestions personnalisées
+    \item \textbf{Comparaisons} : Comparaison anonymisée avec d'autres utilisateurs
+    \item \textbf{Notifications} : Rappels et notifications pour les entraînements
+    \item \textbf{Application mobile} : Développement d'une version mobile native
+\end{itemize}
+
+\vfill
+\begin{center}
+\textbf{Fin du rapport}
+\end{center}
+
+\end{document}
